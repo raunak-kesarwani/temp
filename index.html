@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrowthScale | Performance Digital Marketing</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0B1120',
+                            primary: '#2563EB', // Royal Blue
+                            accent: '#F97316', // Vibrant Orange for CTAs
+                            light: '#F8FAFC',
+                            gray: '#64748B'
+                        }
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                        'glow': '0 0 15px rgba(249, 115, 22, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        .glass-nav {
+            background: rgba(11, 17, 32, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0B1120;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Parallax Utilities */
+        .parallax-element {
+            will-change: transform;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.95;
+            overflow: hidden;
+        }
+
+        /* Loader */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: #0B1120;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-brand-light text-slate-800 font-sans antialiased selection:bg-brand-accent selection:text-white">
+
+    <!-- Loading Screen -->
+    <div class="loader-overlay" id="loader">
+        <div class="text-white text-2xl font-heading font-bold tracking-wider">
+            <span class="text-brand-accent">Growth</span>Scale<span class="animate-pulse">_</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl font-heading font-bold text-white">
+                        <span class="text-brand-accent">Growth</span>Scale
+                    </span>
+                </div>
+
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#services"
+                        class="text-slate-300 hover:text-white hover:text-brand-accent transition-colors text-sm font-medium tracking-wide">SERVICES</a>
+                    <a href="#process"
+                        class="text-slate-300 hover:text-white hover:text-brand-accent transition-colors text-sm font-medium tracking-wide">PROCESS</a>
+                    <a href="#results"
+                        class="text-slate-300 hover:text-white hover:text-brand-accent transition-colors text-sm font-medium tracking-wide">RESULTS</a>
+                    <a href="#contact"
+                        class="px-6 py-2.5 bg-brand-accent hover:bg-orange-600 text-white text-sm font-bold rounded-full transition-all transform hover:scale-105 shadow-glow">
+                        GET FREE AUDIT
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-gray-300 hover:text-white focus:outline-none" id="mobile-menu-btn">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-brand-dark/95 backdrop-blur-xl absolute w-full border-b border-gray-800"
+            id="mobile-menu">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#services" class="block px-3 py-2 text-white hover:text-brand-accent font-medium">Services</a>
+                <a href="#process" class="block px-3 py-2 text-white hover:text-brand-accent font-medium">Process</a>
+                <a href="#results" class="block px-3 py-2 text-white hover:text-brand-accent font-medium">Results</a>
+                <a href="#contact"
+                    class="block mt-4 px-5 py-3 text-center bg-brand-accent text-white font-bold rounded-lg">Get Free
+                    Audit</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Dark Mode + 3D) -->
+    <section class="relative h-screen flex items-center justify-center bg-brand-dark overflow-hidden">
+        <!-- 3D Canvas Background -->
+        <div id="canvas-container"></div>
+
+        <!-- Gradient Overlay -->
+        <div
+            class="absolute inset-0 bg-gradient-to-b from-transparent via-brand-dark/50 to-brand-dark z-0 pointer-events-none">
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20">
+            <div class="hero-anim opacity-0 translate-y-10">
+                <span
+                    class="inline-block py-1 px-3 rounded-full bg-brand-primary/20 border border-brand-primary/30 text-brand-primary text-xs font-bold tracking-widest uppercase mb-6 backdrop-blur-sm">
+                    Performance Marketing Agency
+                </span>
+            </div>
+
+            <h1
+                class="hero-anim opacity-0 translate-y-10 text-4xl md:text-6xl lg:text-7xl font-heading font-extrabold text-white leading-tight mb-6">
+                We Build Brands <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-red-500">That Scale
+                    Revenue.</span>
+            </h1>
+
+            <p
+                class="hero-anim opacity-0 translate-y-10 text-lg md:text-xl text-slate-400 max-w-3xl mx-auto mb-10 font-light leading-relaxed">
+                Performance-focused Google Ads, Meta Ads, SEO & Affiliate Marketing.
+                We help US brands grow faster by focusing on <span class="text-white font-medium">ROAS</span>, not just
+                traffic.
+            </p>
+
+            <div class="hero-anim opacity-0 translate-y-10 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#contact"
+                    class="group relative px-8 py-4 bg-brand-accent text-white font-bold rounded-full overflow-hidden shadow-lg hover:shadow-orange-500/40 transition-all">
+                    <span class="relative z-10 flex items-center gap-2">
+                        Book Free Consultation <i
+                            class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                    <div
+                        class="absolute inset-0 bg-orange-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300">
+                    </div>
+                </a>
+                <a href="#services"
+                    class="px-8 py-4 bg-transparent border border-slate-600 text-white font-semibold rounded-full hover:bg-white/5 hover:border-white transition-all">
+                    Explore Services
+                </a>
+            </div>
+
+            <!-- Trust Badges -->
+            <div
+                class="hero-anim opacity-0 translate-y-10 mt-16 pt-8 border-t border-slate-800/50 flex flex-wrap justify-center gap-8 md:gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                <i class="fab fa-google text-2xl md:text-3xl text-white"></i>
+                <i class="fab fa-meta text-2xl md:text-3xl text-white"></i>
+                <i class="fab fa-shopify text-2xl md:text-3xl text-white"></i>
+                <i class="fab fa-amazon text-2xl md:text-3xl text-white"></i>
+                <i class="fab fa-wordpress text-2xl md:text-3xl text-white"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 bg-brand-light relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20 scroll-trigger">
+                <h2 class="text-3xl md:text-5xl font-heading font-bold text-slate-900 mb-4">Our Core Services</h2>
+                <div class="w-20 h-1.5 bg-brand-accent mx-auto rounded-full mb-6"></div>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">Everything you need to dominate the US market. No
+                    fluff, just performance.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Card 1 -->
+                <div
+                    class="service-card group bg-white p-8 rounded-2xl shadow-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fab fa-google text-8xl text-brand-primary transform rotate-12"></i>
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-6 text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-colors">
+                        <i class="fab fa-google text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Google Ads Management</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Search, Shopping, and Performance Max campaigns optimized for high ROAS. Clean tracking and
+                        profitable scaling.
+                    </p>
+                    <a href="#contact"
+                        class="inline-flex items-center text-brand-primary font-semibold text-sm group-hover:text-brand-accent transition-colors">
+                        Learn More <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Card 2 -->
+                <div
+                    class="service-card group bg-white p-8 rounded-2xl shadow-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fab fa-facebook-f text-8xl text-blue-600 transform rotate-12"></i>
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-6 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <i class="fab fa-meta text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Meta Ads</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Conversion-focused campaigns on FB & Instagram. We turn clicks into customers using strong
+                        creatives and data.
+                    </p>
+                    <a href="#contact"
+                        class="inline-flex items-center text-blue-600 font-semibold text-sm group-hover:text-brand-accent transition-colors">
+                        Learn More <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Card 3 -->
+                <div
+                    class="service-card group bg-white p-8 rounded-2xl shadow-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-search-dollar text-8xl text-green-500 transform rotate-12"></i>
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mb-6 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors">
+                        <i class="fas fa-search text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">SEO (US-Focused)</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Technical SEO and content strategies tailored for US buying intent. Improve visibility and
+                        organic revenue.
+                    </p>
+                    <a href="#contact"
+                        class="inline-flex items-center text-green-600 font-semibold text-sm group-hover:text-brand-accent transition-colors">
+                        Learn More <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Card 4 -->
+                <div
+                    class="service-card group bg-white p-8 rounded-2xl shadow-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-handshake text-8xl text-purple-500 transform rotate-12"></i>
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center mb-6 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                        <i class="fas fa-network-wired text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Affiliate Marketing</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        We recruit quality partners and optimize commissions to drive incremental revenue without high
+                        upfront risk.
+                    </p>
+                    <a href="#contact"
+                        class="inline-flex items-center text-purple-600 font-semibold text-sm group-hover:text-brand-accent transition-colors">
+                        Learn More <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us (Parallax/Dark) -->
+    <section class="py-24 bg-brand-dark relative overflow-hidden">
+        <!-- Abstract Shapes -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-primary rounded-full blur-[120px] opacity-20 parallax-element"
+            data-speed="0.05"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-brand-accent rounded-full blur-[100px] opacity-10 parallax-element"
+            data-speed="-0.05"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="scroll-trigger">
+                    <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mb-6">Why Choose Us?</h2>
+                    <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+                        We don't just run ads; we build scalable growth systems. Our methodology is rooted in data
+                        transparency and aggressive optimization.
+                    </p>
+
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accent mt-1">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-white">ROI & ROAS Focused</h4>
+                                <p class="text-slate-400 text-sm mt-1">We treat your budget like our own. Every dollar
+                                    spent is tracked for returns.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center text-brand-primary mt-1">
+                                <i class="fas fa-flag-usa"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-white">US Market Expertise</h4>
+                                <p class="text-slate-400 text-sm mt-1">Deep understanding of US consumer behavior and
+                                    seasonal trends.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 mt-1">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-white">Transparent Reporting</h4>
+                                <p class="text-slate-400 text-sm mt-1">Live dashboards. No hidden fees. You see exactly
+                                    where your money goes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats / Results Mockup -->
+                <div class="relative scroll-trigger translate-x-10 opacity-0">
+                    <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl border border-slate-700 p-8 shadow-2xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-white font-bold">Performance Overview</h3>
+                            <span class="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">Last 30 Days</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-slate-700/50 p-4 rounded-xl">
+                                <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Total Revenue</p>
+                                <p class="text-2xl font-bold text-white">$<span class="counter"
+                                        data-target="142500">0</span></p>
+                                <p class="text-green-400 text-xs mt-1"><i class="fas fa-arrow-up"></i> 24% vs prev</p>
+                            </div>
+                            <div class="bg-slate-700/50 p-4 rounded-xl">
+                                <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Avg. ROAS</p>
+                                <p class="text-2xl font-bold text-brand-accent"><span class="counter"
+                                        data-target="4.8">0</span>x</p>
+                                <p class="text-green-400 text-xs mt-1"><i class="fas fa-arrow-up"></i> 12% vs prev</p>
+                            </div>
+                        </div>
+
+                        <!-- Fake Graph -->
+                        <div class="h-32 flex items-end justify-between gap-2 px-2">
+                            <div class="w-full bg-brand-primary/20 rounded-t-sm h-12 relative group">
+                                <div class="absolute bottom-0 w-full bg-brand-primary rounded-t-sm transition-all duration-1000 h-0 graph-bar"
+                                    style="--h: 40%"></div>
+                            </div>
+                            <div class="w-full bg-brand-primary/20 rounded-t-sm h-12 relative group">
+                                <div class="absolute bottom-0 w-full bg-brand-primary rounded-t-sm transition-all duration-1000 delay-100 h-0 graph-bar"
+                                    style="--h: 65%"></div>
+                            </div>
+                            <div class="w-full bg-brand-primary/20 rounded-t-sm h-12 relative group">
+                                <div class="absolute bottom-0 w-full bg-brand-primary rounded-t-sm transition-all duration-1000 delay-200 h-0 graph-bar"
+                                    style="--h: 55%"></div>
+                            </div>
+                            <div class="w-full bg-brand-primary/20 rounded-t-sm h-12 relative group">
+                                <div class="absolute bottom-0 w-full bg-brand-primary rounded-t-sm transition-all duration-1000 delay-300 h-0 graph-bar"
+                                    style="--h: 85%"></div>
+                            </div>
+                            <div class="w-full bg-brand-primary/20 rounded-t-sm h-12 relative group">
+                                <div class="absolute bottom-0 w-full bg-brand-primary rounded-t-sm transition-all duration-1000 delay-400 h-0 graph-bar"
+                                    style="--h: 70%"></div>
+                            </div>
+                            <div class="w-full bg-brand-primary/20 rounded-t-sm h-12 relative group">
+                                <div class="absolute bottom-0 w-full bg-brand-accent rounded-t-sm transition-all duration-1000 delay-500 h-0 graph-bar shadow-[0_0_15px_rgba(249,115,22,0.5)]"
+                                    style="--h: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Badge -->
+                    <div
+                        class="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-xl animate-bounce duration-[3000ms]">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-green-100 p-2 rounded-full text-green-600">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-bold">Conversion Rate</p>
+                                <p class="text-lg font-bold text-gray-800">+3.2%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-trigger">
+                <span class="text-brand-accent font-bold tracking-widest text-sm uppercase">How We Work</span>
+                <h2 class="text-3xl md:text-5xl font-heading font-bold text-slate-900 mt-2">The Growth Framework</h2>
+            </div>
+
+            <div class="relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -translate-y-1/2 z-0">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-8 relative z-10">
+                    <!-- Step 1 -->
+                    <div class="group text-center scroll-trigger translate-y-10 opacity-0">
+                        <div
+                            class="w-16 h-16 mx-auto bg-white border-2 border-slate-200 text-slate-400 rounded-full flex items-center justify-center text-xl font-bold mb-4 group-hover:border-brand-primary group-hover:text-brand-primary group-hover:shadow-lg group-hover:scale-110 transition-all duration-300 relative">
+                            1
+                            <div
+                                class="absolute inset-0 rounded-full bg-brand-primary opacity-0 group-hover:opacity-10 transition-opacity">
+                            </div>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900">Audit</h4>
+                        <p class="text-xs text-slate-500 mt-2 px-2">Account & Data Analysis</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="group text-center scroll-trigger translate-y-10 opacity-0"
+                        style="transition-delay: 100ms;">
+                        <div
+                            class="w-16 h-16 mx-auto bg-white border-2 border-slate-200 text-slate-400 rounded-full flex items-center justify-center text-xl font-bold mb-4 group-hover:border-brand-primary group-hover:text-brand-primary group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
+                            2
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900">Strategy</h4>
+                        <p class="text-xs text-slate-500 mt-2 px-2">Custom Growth Plan</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="group text-center scroll-trigger translate-y-10 opacity-0"
+                        style="transition-delay: 200ms;">
+                        <div
+                            class="w-16 h-16 mx-auto bg-white border-2 border-brand-accent text-brand-accent rounded-full flex items-center justify-center text-xl font-bold mb-4 shadow-glow scale-110 bg-orange-50">
+                            3
+                        </div>
+                        <h4 class="text-lg font-bold text-brand-accent">Launch</h4>
+                        <p class="text-xs text-slate-500 mt-2 px-2">Campaign Activation</p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="group text-center scroll-trigger translate-y-10 opacity-0"
+                        style="transition-delay: 300ms;">
+                        <div
+                            class="w-16 h-16 mx-auto bg-white border-2 border-slate-200 text-slate-400 rounded-full flex items-center justify-center text-xl font-bold mb-4 group-hover:border-brand-primary group-hover:text-brand-primary group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
+                            4
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900">Optimize</h4>
+                        <p class="text-xs text-slate-500 mt-2 px-2">Weekly Refinement</p>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="group text-center scroll-trigger translate-y-10 opacity-0"
+                        style="transition-delay: 400ms;">
+                        <div
+                            class="w-16 h-16 mx-auto bg-white border-2 border-slate-200 text-slate-400 rounded-full flex items-center justify-center text-xl font-bold mb-4 group-hover:border-brand-primary group-hover:text-brand-primary group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
+                            5
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900">Scale</h4>
+                        <p class="text-xs text-slate-500 mt-2 px-2">Maximize Revenue</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-brand-primary relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 pattern-dots"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center text-white">
+            <h2 class="text-3xl md:text-5xl font-heading font-bold mb-6">Ready to scale your business?</h2>
+            <p class="text-blue-100 text-lg mb-10">Stop guessing. Start growing. Get a free audit of your current
+                digital marketing strategy.</p>
+            <a href="#contact"
+                class="inline-block bg-white text-brand-primary font-bold px-10 py-4 rounded-full shadow-2xl hover:bg-brand-accent hover:text-white transition-all transform hover:-translate-y-1">
+                Book Free Call
+            </a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-slate-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row">
+                <!-- Info Side -->
+                <div
+                    class="md:w-5/12 bg-brand-dark p-10 md:p-12 text-white flex flex-col justify-between relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-64 h-64 bg-brand-accent rounded-full blur-[80px] opacity-20 -mr-20 -mt-20">
+                    </div>
+
+                    <div>
+                        <h3 class="text-3xl font-heading font-bold mb-6">Let's Talk Growth</h3>
+                        <p class="text-slate-400 mb-10">Fill out the form to get your free strategy consultation and
+                            account audit.</p>
+
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                                    <i class="fas fa-envelope text-brand-accent"></i>
+                                </div>
+                                <span>hello@growthscale.com</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                                    <i class="fas fa-phone text-brand-accent"></i>
+                                </div>
+                                <span>+1 (555) 123-4567</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12">
+                        <p class="text-sm text-slate-500 mb-4">Trusted by brands in:</p>
+                        <div class="flex gap-4">
+                            <span class="px-3 py-1 rounded bg-white/10 text-xs">E-Commerce</span>
+                            <span class="px-3 py-1 rounded bg-white/10 text-xs">SaaS</span>
+                            <span class="px-3 py-1 rounded bg-white/10 text-xs">Services</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Side -->
+                <div class="md:w-7/12 p-10 md:p-12">
+                    <form onsubmit="event.preventDefault(); alert('Thanks! We will contact you shortly.');">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">First
+                                    Name</label>
+                                <input type="text"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                                    placeholder="John">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Last
+                                    Name</label>
+                                <input type="text"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                                    placeholder="Doe">
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Website
+                                URL</label>
+                            <input type="url"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                                placeholder="https://yourbrand.com">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Monthly
+                                Ad Budget</label>
+                            <select
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all text-slate-600">
+                                <option>$1,000 - $5,000</option>
+                                <option>$5,000 - $10,000</option>
+                                <option>$10,000 - $50,000</option>
+                                <option>$50,000+</option>
+                            </select>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-brand-dark text-white font-bold py-4 rounded-lg hover:bg-brand-accent transition-colors shadow-lg">
+                            Get Free Audit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-white py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <span class="text-2xl font-heading font-bold text-white mb-4 block">
+                        <span class="text-brand-accent">Growth</span>Scale
+                    </span>
+                    <p class="text-slate-400 max-w-sm">
+                        Helping US brands grow faster with profitable digital marketing strategies. Built to scale
+                        revenue, not just traffic.
+                    </p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-lg mb-4 text-white">Services</h5>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Google Ads</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Meta Ads</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">SEO</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Affiliate Marketing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold text-lg mb-4 text-white">Company</h5>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 mt-12 pt-8">
+                <div class="text-center text-slate-400 text-xs mb-2">
+                    Site built by EternaGreen Solutions Pvt Ltd
+                </div>
+                <div class="text-center text-slate-500 text-sm">
+                    &copy; 2026 GrowthScale Agency. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chatbot Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <!-- Chat Window (Hidden by default) -->
+        <div id="chat-window"
+            class="hidden absolute bottom-20 right-0 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform origin-bottom-right transition-all">
+            <div class="bg-brand-dark p-4 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-white text-xs">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <p class="text-white font-bold text-sm">GrowthBot AI</p>
+                    <p class="text-slate-400 text-xs">Online</p>
+                </div>
+                <button id="close-chat" class="ml-auto text-slate-400 hover:text-white"><i
+                        class="fas fa-times"></i></button>
+            </div>
+            <div class="p-4 h-64 overflow-y-auto bg-slate-50 text-sm">
+                <div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm mb-2 max-w-[85%] border border-slate-100">
+                    <p class="text-slate-700">Hi there! 👋 Want to scale your revenue? How can I help you today?</p>
+                </div>
+                <div class="flex gap-2 mt-4 flex-wrap">
+                    <button
+                        class="text-xs bg-white border border-brand-primary text-brand-primary px-3 py-1 rounded-full hover:bg-brand-primary hover:text-white transition-colors">Get
+                        an Audit</button>
+                    <button
+                        class="text-xs bg-white border border-brand-primary text-brand-primary px-3 py-1 rounded-full hover:bg-brand-primary hover:text-white transition-colors">Pricing</button>
+                </div>
+            </div>
+            <div class="p-3 border-t border-slate-100 bg-white">
+                <input type="text" placeholder="Type a message..."
+                    class="w-full text-sm bg-slate-50 rounded-full px-4 py-2 focus:outline-none focus:ring-1 focus:ring-brand-primary">
+            </div>
+        </div>
+
+        <!-- Toggle Button -->
+        <button id="chat-toggle"
+            class="w-14 h-14 bg-brand-accent text-white rounded-full shadow-glow flex items-center justify-center text-2xl hover:scale-110 transition-transform">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+    </div>
+
+    <script>
+        // --- 1. Loader Animation ---
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    initHeroAnimations();
+                }, 500);
+            }, 1000);
+        });
+
+        // --- 2. Three.js Background (Particle Network) ---
+        function initThreeJS() {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 3000; // number of dots
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for (let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 80; // Spread
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.15,
+                // color: 0x2563EB, 
+                color: 0xfb8500, // Brand Primary Blue
+                transparent: true,
+                opacity: 0.8,
+            });
+
+            // Lines connecting particles
+            // We'll calculate lines in the animate loop for dynamic effect, 
+            // but for performance in a simple file, let's create a static line object or use a simple mesh.
+            // Let's use a Wireframe Geometry for a "Tech" look instead of heavy particle lines calculation
+            const geometry = new THREE.IcosahedronGeometry(20, 1);
+            const wireframe = new THREE.WireframeGeometry(geometry);
+            const lineMaterial = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.3 });
+            const sphere = new THREE.LineSegments(wireframe, lineMaterial);
+            scene.add(sphere);
+
+            const particlesMesh = new THREE.Points(particlesGeometry, material);
+            scene.add(particlesMesh);
+
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX);
+                mouseY = (event.clientY - windowHalfY);
+            });
+
+            const clock = new THREE.Clock();
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                targetX = mouseX * 0.001;
+                targetY = mouseY * 0.001;
+
+                sphere.rotation.y += 0.5 * (targetX - sphere.rotation.y);
+                sphere.rotation.x += 0.5 * (targetY - sphere.rotation.x);
+                sphere.rotation.z += 0.001; // Constant rotation
+
+                particlesMesh.rotation.y = sphere.rotation.y;
+                particlesMesh.rotation.x = sphere.rotation.x;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        initThreeJS();
+
+        // --- 3. Anime.js & Scroll Interactions ---
+
+        // Hero Entrance
+        function initHeroAnimations() {
+            anime({
+                targets: '.hero-anim',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                delay: anime.stagger(200),
+                easing: 'easeOutExpo',
+                duration: 1200
+            });
+        }
+
+        // Scroll Observer
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Generic fade up
+                    if (entry.target.classList.contains('scroll-trigger')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [30, 0],
+                            easing: 'easeOutQuad',
+                            duration: 800
+                        });
+                        entry.target.classList.remove('opacity-0'); // prevent flicker
+                        entry.target.classList.remove('translate-y-10');
+
+                        // If it contains graph bars
+                        const bars = entry.target.querySelectorAll('.graph-bar');
+                        if (bars.length > 0) {
+                            bars.forEach(bar => {
+                                bar.style.height = bar.style.getPropertyValue('--h');
+                            });
+                        }
+                    }
+
+                    // Number Counters
+                    const counters = entry.target.querySelectorAll('.counter');
+                    if (counters.length > 0) {
+                        counters.forEach(counter => {
+                            const target = parseFloat(counter.getAttribute('data-target'));
+                            anime({
+                                targets: counter,
+                                innerHTML: [0, target],
+                                round: target % 1 === 0 ? 1 : 10, // Integer vs Float
+                                easing: 'easeOutExpo',
+                                duration: 2000
+                            });
+                        });
+                    }
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-trigger').forEach(el => {
+            observer.observe(el);
+        });
+
+        // --- 4. Navbar & UI Logic ---
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+                nav.style.background = 'rgba(11, 17, 32, 0.95)';
+            } else {
+                nav.classList.remove('shadow-lg');
+                nav.style.background = 'rgba(11, 17, 32, 0.85)';
+            }
+
+            // Parallax effect for shapes
+            const parallaxEls = document.querySelectorAll('.parallax-element');
+            parallaxEls.forEach(el => {
+                const speed = el.getAttribute('data-speed');
+                el.style.transform = `translateY(${window.scrollY * speed}px)`;
+            });
+        });
+
+        // Mobile Menu
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Chatbot Toggle
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const closeChat = document.getElementById('close-chat');
+
+        function toggleChat() {
+            chatWindow.classList.toggle('hidden');
+        }
+
+        chatToggle.addEventListener('click', toggleChat);
+        closeChat.addEventListener('click', toggleChat);
+
+    </script>
+</body>
+
+</html>
